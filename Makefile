@@ -3,7 +3,7 @@ CC = cc
 CFLAGS = -Werror -Wall -Wextra -g3 -I. -I.. 
 SRC_FOLDER = src
 OBJ_FOLDER = obj
-SRCS_FILES = $(addprefix $(SRC_FOLDER)/, $(addsuffix .c, main))
+SRCS_FILES = $(addprefix $(SRC_FOLDER)/, $(addsuffix .c, main utils))
 OBJS = $(patsubst $(SRC_FOLDER)/%.c, $(OBJ_FOLDER)/%.o, $(SRCS_FILES))	
 
 all: $(OBJ_FOLDER) $(NAME)
@@ -23,10 +23,12 @@ $(OBJ_FOLDER):
 
 clean:
 	@rm -rf $(OBJ_FOLDER)
+	@make clean -s -C Libft 
 	@echo 'Objetos limpos!'
 
 fclean: clean
 	@rm -f $(NAME)
+	@rm -f libft.a
 	@echo  'Biblioteca limpa!'
 
 re: fclean all
