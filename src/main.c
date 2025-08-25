@@ -15,59 +15,26 @@
 int	main(int argc, char **argv, char **envp)
 {
 	t_data	data;
-	int		i;
 	int		pipe_fd[2];
-	int		commands_count;
-	char	*path;
-	char	**cmd;
-	int		status;
-	int		wpid;
+	int		status1;
+	int		status2;
 
-	i = 1;
 	if (argc != 5)
 		return (-1);
-	commands_count = argc - 3;
-	data.stdin = dup(0);
-	data.stdout = dup(1);
-	while (i <= commands_count)
-	{
-		pipe(pipe_fd);
-		data.pid = fork();
-		if (data.pid < 0)
-			write(2, "Erro\n", 5);
-		else if (data.pid == 0)
-		{
-			if (i == 1)
-				data.fd = open(argv[1], O_RDONLY);
-			else if (i == commands_count)
-				data.fd = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC,
-						0644);
-			if (data.fd < 0)
-				(perror("zsh"));
-			// write(2, "Nao deu para abrir o arquivo\n", 29);
-			if (i == 1)
-				(dup2(data.fd, 0), dup2(pipe_fd[1], 1));
-			else if (i == commands_count)
-				(dup2(pipe_fd[0], 0), dup2(data.fd, 1));
-			close(data.fd);
-			path = get_path(argc, argv, envp);
-			cmd = get_cmds(argv, argc);
-			execve(path, cmd, envp);
-			write(2, "execve falhou\n", 14);
-			exit(-1);
-		}
-		i++;
-	}
-	if (data.pid > 0)
-	{
-		while (1)
-		{
-			wpid = waitpid(data.pid, &status, 0);
-			if (wpid <= 0)
-				break ;
-		}
-				// loop para quantidade de filhos
-	}
-	// get_path(argc, argv, envp);
+	pipe(pipe_fd);
+	data.child1 = fork();
+	if (data.child1 < 0)
+		perror("Erro");
+	else if (data.child1 == 0)
+		child1(data, argv, envp, pipe_fd);
+	data.child2 = fork();
+	if (data.child2 < 0)
+		perror("Erro");
+	else if (data.child2 == 0)
+		child2(data, argv, envp, pipe_fd);
+	close(pipe_fd[0]);
+	close(pipe_fd[1]);
+	waitpid(data.child1, &status1, 0);
+	waitpid(data.child2, &status2, 0);
 	return (0);
 }

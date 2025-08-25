@@ -3,7 +3,7 @@ CC = cc
 CFLAGS = -Werror -Wall -Wextra -g3 -I. -I.. 
 SRC_FOLDER = src
 OBJ_FOLDER = obj
-SRCS_FILES = $(addprefix $(SRC_FOLDER)/, $(addsuffix .c, main utils))
+SRCS_FILES = $(addprefix $(SRC_FOLDER)/, $(addsuffix .c, main utils children path))
 OBJS = $(patsubst $(SRC_FOLDER)/%.c, $(OBJ_FOLDER)/%.o, $(SRCS_FILES))	
 
 all: $(OBJ_FOLDER) $(NAME)

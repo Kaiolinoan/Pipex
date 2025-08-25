@@ -15,10 +15,8 @@
 int	print_str(const char *str)
 {
 	int		count;
-	size_t	i;
 
 	count = 0;
-	i = 0;
 	if (!str)
 	{
 		count += write(1, "(null)", 6);

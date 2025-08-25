@@ -12,83 +12,37 @@
 
 #include "../pipex.h"
 
-char	**get_cmds(char **argv, int argc)
+char	*ft_free_and_join(char *s1, char *s2)
 {
-	char		**command;
-	static int	i = 2;
-
-	if (i > argc - 2)
-		return (NULL);
-	command = ft_split(argv[i], ' ');
-	if (!command)
-		return (NULL);
-	i++;
-	return (command);
-}
-
-char	*search_path(char **envp)
-{
-	char	*path;
+	char	*str;
 	size_t	i;
+	size_t	j;
 
+	str = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
+	if (!str)
+		return (NULL);
 	i = 0;
-	path = NULL;
-	while (envp[i])
+	while (s1 && s1[i])
 	{
-		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
-		{
-			path = envp[i] + 5;
-			break ;
-		}
+		str[i] = s1[i];
 		i++;
 	}
-	return (path);
+	j = 0;
+	while (s2[j])
+		str[i++] = s2[j++];
+	str[i] = '\0';
+	free (s1);
+	return (str);
 }
 
-char	*join_path(char *raw_path, char **argv, int argc, int av_index)
+void print_error(char *file, int pipe_fd[2])
 {
-	char		*full_path;
-	char		**command;
-
-	if (av_index > argc - 2)
-		return (NULL);
-	full_path = ft_strjoin(raw_path, "/");
-	if (!full_path)
-		return (NULL);
-	command = ft_split(argv[av_index], ' ');
-	if (!command)
-		return (NULL);
-	full_path = ft_strjoin(full_path, command[0]);
-	if (!full_path)
-		return (NULL);
-	return (full_path);
-}
-char	*get_path(int argc, char **argv, char **envp)
-{
-	char	**arr_path;
-	char	*full_path;
-	static int	av_index = 2;
-	int		i;
-
-	arr_path = ft_split(search_path(envp), ':');
-	if (!arr_path)
-		return (NULL);
-	i = 0;
-	while (arr_path[i])
-	{
-		full_path = join_path(arr_path[i], argv, argc, av_index);
-		if (!full_path)
-			return (NULL);
-		if (access(full_path, F_OK) == 0)
-		{
-			av_index++;
-			printf("path: %s\n", full_path);
-			return (full_path);
-		}
-		else
-			i++;
-	}
-	av_index++;
-	printf("path nao encontrado");
-	return (NULL);
+	write(2, "zsh: ", 5);
+    write(2, strerror(errno), ft_strlen(strerror(errno)));
+    write(2, ": ", 2);
+    write(2, file, ft_strlen(file));
+    write(2, "\n", 1);
+	close(pipe_fd[0]);
+	close(pipe_fd[1]);
+	exit(-2);
 }
