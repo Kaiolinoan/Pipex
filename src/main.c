@@ -15,6 +15,7 @@
 int	main(int argc, char **argv, char **envp)
 {
 	t_data	data;
+
 	int		pipe_fd[2];
 	int		status1;
 	int		status2;
@@ -36,5 +37,6 @@ int	main(int argc, char **argv, char **envp)
 	close(pipe_fd[1]);
 	waitpid(data.child1, &status1, 0);
 	waitpid(data.child2, &status2, 0);
+	//CAMINHO ABSOLUTO
 	return (0);
 }

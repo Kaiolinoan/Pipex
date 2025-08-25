@@ -50,7 +50,7 @@ static char	*join_path(char *raw_path, char **argv, int av_index)
 	if (!full_path)
 		return (free(full_path), NULL);
 	command = ft_split(argv[av_index], ' ');
-	if (!command)
+	if (!command || !command[0])
 		return (clean_mem(full_path, command), NULL);
 	full_path = ft_free_and_join(full_path, command[0]);
 	if (!full_path)
