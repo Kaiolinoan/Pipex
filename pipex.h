@@ -1,31 +1,36 @@
-#ifndef pipex_h
-#define pipex_h
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipex.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: klino-an <klino-an@student.42lisboa.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/26 15:23:46 by klino-an          #+#    #+#             */
+/*   Updated: 2025/08/26 15:23:46 by klino-an         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#include "Libft/libft.h"
+#ifndef PIPEX_H
+# define PIPEX_H
 
-#include <sys/wait.h>
-#include <errno.h>
-
+# include "Libft/libft.h"
+# include <errno.h>
+# include <sys/wait.h>
 
 typedef struct s_data
 {
-    pid_t pid;
-    int fd;
-    int child1;
-    int child2;
-}   t_data;
+	pid_t	pid;
+	int		fd;
+	int		child1;
+	int		child2;
+}	t_data;
 
-void    child1(t_data data, char **argv, char **envp, int pipe_fd[2]);
-void    child2(t_data data, char **argv, char **envp, int pipe_fd[2]);
+void	child1(t_data data, char **argv, char **envp, int pipe_fd[2]);
+void	child2(t_data data, char **argv, char **envp, int pipe_fd[2]);
 char	*get_path(char **argv, char **envp, int av_index);
-void    print_error(char *file, int pipe_fd[2]);
+void	print_error(char *file, int pipe_fd[2]);
 char	*ft_free_and_join(char *s1, char *s2);
 char	**get_cmds(char **argv, int av_index);
-void     clean_mem(char *path, char **cmd);
-
-
-
-
-
+void	clean_mem(char *path, char **cmd);
 
 #endif
