@@ -62,3 +62,13 @@ void	clean_mem(char *path, char **matriz)
 	if (path)
 		free(path);
 }
+
+void	free_split(char **str, size_t count)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < count)
+		free(str[i++]);
+	free(str);
+}

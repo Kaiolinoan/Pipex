@@ -37,7 +37,6 @@ int	main(int argc, char **argv, char **envp)
 	close(pipe_fd[1]);
 	waitpid(data.child1, &status1, 0);
 	waitpid(data.child2, &status2, 0);
-	//split com ''
-	//grep ' '
+	//split quotes done and probably it works, need to implement it into code
 	return (0);
 }
