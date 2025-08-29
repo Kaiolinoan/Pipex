@@ -1,48 +1,47 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_split_quotes.c                                  :+:      :+:    :+:   */
+/*   split_quotes.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: klino-an <klino-an@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 13:14:34 by marvin            #+#    #+#             */
-/*   Updated: 2025/08/28 13:14:34 by marvin           ###   ########.fr       */
+/*   Updated: 2025/08/29 15:43:24 by klino-an         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
 
-static size_t get_word_len(char const *s, char c, size_t *i)
+static size_t	get_word_len(char const *s, char c, size_t *i)
 {
-	size_t arr_i;
+	size_t	arr_i;
 
 	arr_i = 0;
 	while (s[*i] && s[*i] == c)
-			(*i)++;
-		while (s[*i] && s[*i] != c)
+		(*i)++;
+	while (s[*i] && s[*i] != c)
+	{
+		if (s[*i] == 39)
 		{
-			if (s[*i] == 39)
-			{
-				(*i)++;
-				while (s[*i] && s[*i] != 39)
-				{
-					arr_i++;
-					(*i)++;
-				}
-				if (s[*i] == 39)
-					(*i)++;
-			}
-			else
+			(*i)++;
+			while (s[*i] && s[*i] != 39)
 			{
 				arr_i++;
 				(*i)++;
 			}
+			if (s[*i] == 39)
+				(*i)++;
 		}
+		else
+		{
+			arr_i++;
+			(*i)++;
+		}
+	}
 	return (arr_i);
 }
 
-
-static void	fill_arr(char **str, char const *s, size_t count, char c, size_t i)
+static void	fill_arr(char **str, char const *s, size_t count, size_t i)
 {
 	t_split	var;
 
@@ -50,9 +49,9 @@ static void	fill_arr(char **str, char const *s, size_t count, char c, size_t i)
 	while (var.mat_index < count)
 	{
 		var.arr_i = 0;
-		while (s[i] && s[i] == c)
+		while (s[i] && s[i] == ' ')
 			i++;
-		while (s[i] && s[i] != c)
+		while (s[i] && s[i] != ' ')
 		{
 			if (s[i] == 39)
 			{
@@ -71,10 +70,10 @@ static void	fill_arr(char **str, char const *s, size_t count, char c, size_t i)
 	str[var.mat_index] = NULL;
 }
 
-static	size_t	split_str(char **str, char const *s, size_t count, char c)
+static size_t	split_str(char **str, char const *s, size_t count, char c)
 {
 	t_split	var;
-	size_t i;
+	size_t	i;
 
 	i = 0;
 	var.mat_index = 0;
@@ -103,6 +102,8 @@ static size_t	count_words(char const *s, char c, size_t i, size_t count)
 				i++;
 				while (s[i] && s[i] != 39)
 					i++;
+				if (s[i] == 39)
+					i++;
 			}
 			else
 			{
@@ -128,6 +129,6 @@ char	**ft_split_quotes(char const *s, char c)
 		return (NULL);
 	if (!split_str(matriz, s, total_words, c))
 		return (NULL);
-	fill_arr(matriz, s, total_words, c, 0);
+	fill_arr(matriz, s, total_words, 0);
 	return (matriz);
 }

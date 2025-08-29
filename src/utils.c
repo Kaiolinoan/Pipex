@@ -37,16 +37,13 @@ char	*ft_free_and_join(char *s1, char *s2)
 	return (str);
 }
 
-void	print_error(char *file, int pipe_fd[2])
+void	print_error(char *file)
 {
 	write(2, "zsh: ", 5);
 	write(2, strerror(errno), ft_strlen(strerror(errno)));
 	write(2, ": ", 2);
 	write(2, file, ft_strlen(file));
 	write(2, "\n", 1);
-	close(pipe_fd[0]);
-	close(pipe_fd[1]);
-	exit(-2);
 }
 
 void	clean_mem(char *path, char **matriz)
@@ -71,4 +68,11 @@ void	free_split(char **str, size_t count)
 	while (i < count)
 		free(str[i++]);
 	free(str);
+}
+
+void	close_and_exit(int pipe_fd[2])
+{
+	close(pipe_fd[0]);
+	close(pipe_fd[1]);
+	exit(EXIT_FAILURE);
 }

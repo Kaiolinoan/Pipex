@@ -19,7 +19,7 @@ void	child1(t_data data, char **argv, char **envp, int pipe_fd[2])
 
 	data.fd = open(argv[1], O_RDONLY);
 	if (data.fd < 0)
-		print_error(argv[1], pipe_fd);
+		(print_error(argv[1]), close_and_exit(pipe_fd));
 	close(pipe_fd[0]);
 	dup2(data.fd, 0);
 	dup2(pipe_fd[1], 1);
@@ -34,7 +34,7 @@ void	child1(t_data data, char **argv, char **envp, int pipe_fd[2])
 		(clean_mem(path, cmd), exit(EXIT_FAILURE));
 	}
 	execve(path, cmd, envp);
-	perror("zsh");
+	print_error(argv[2]);
 	clean_mem(path, cmd);
 	exit(EXIT_FAILURE);
 }
@@ -46,7 +46,7 @@ void	child2(t_data data, char **argv, char **envp, int pipe_fd[2])
 
 	data.fd = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (data.fd < 0)
-		print_error(argv[4], pipe_fd);
+		(print_error(argv[4]), close_and_exit(pipe_fd));
 	close(pipe_fd[1]);
 	dup2(pipe_fd[0], 0);
 	dup2(data.fd, 1);
@@ -61,7 +61,7 @@ void	child2(t_data data, char **argv, char **envp, int pipe_fd[2])
 		(clean_mem(path, cmd), exit(EXIT_FAILURE));
 	}
 	execve(path, cmd, envp);
-	perror("zsh");
+	print_error(argv[3]);
 	clean_mem(path, cmd);
 	exit(EXIT_FAILURE);
 }

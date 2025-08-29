@@ -16,7 +16,7 @@ char	**get_cmds(char **argv, int av_index)
 {
 	char	**command;
 
-	command = ft_split(argv[av_index], ' ');
+	command = ft_split_quotes(argv[av_index], ' ');
 	if (!command)
 		return (clean_mem(NULL, command), NULL);
 	return (command);
@@ -49,7 +49,7 @@ static char	*join_path(char *raw_path, char **argv, int av_index)
 	full_path = ft_strjoin(raw_path, "/");
 	if (!full_path)
 		return (free(full_path), NULL);
-	command = ft_split(argv[av_index], ' ');
+	command = ft_split_quotes(argv[av_index], ' ');
 	if (!command || !command[0])
 		return (clean_mem(full_path, command), NULL);
 	full_path = ft_free_and_join(full_path, command[0]);
@@ -72,15 +72,15 @@ char	*get_path(char **argv, char **envp, int av_index)
 	i = 0;
 	while (arr_path[i])
 	{
-		if (access(argv[av_index], F_OK | X_OK) == 0)
+		if (access(argv[av_index], F_OK) == 0)
 			return (argv[av_index]);
 		if (full_path)
 			free(full_path);
 		full_path = join_path(arr_path[i], argv, av_index);
 		if (!full_path)
 			return (clean_mem(full_path, arr_path), NULL);
-		if (access(full_path, F_OK | X_OK) == 0)
-			return (full_path);
+		if (access(full_path, F_OK) == 0)
+			return (clean_mem(NULL, arr_path), full_path);
 		else
 			i++;
 	}

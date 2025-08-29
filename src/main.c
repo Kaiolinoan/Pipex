@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: klino-an <klino-an@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/26 15:25:05 by klino-an          #+#    #+#             */
-/*   Updated: 2025/08/26 15:25:05 by klino-an         ###   ########.fr       */
+/*   Created: 2025/08/29 15:21:11 by klino-an          #+#    #+#             */
+/*   Updated: 2025/08/29 15:21:11 by klino-an         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	main(int argc, char **argv, char **envp)
 	int		status2;
 
 	if (argc != 5)
-		return (-1);
+		return (EXIT_FAILURE);
 	if (pipe(pipe_fd) < 0)
 		return (perror("Error"), -1);
 	data.child1 = fork();
@@ -37,6 +37,5 @@ int	main(int argc, char **argv, char **envp)
 	close(pipe_fd[1]);
 	waitpid(data.child1, &status1, 0);
 	waitpid(data.child2, &status2, 0);
-	//split quotes done and probably it works, need to implement it into code
 	return (0);
 }
