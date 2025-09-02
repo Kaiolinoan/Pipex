@@ -10,64 +10,58 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../pipex.h"
+#include "pipex_bonus.h"
 
-// int	main(int argc, char **argv, char **envp)
-// {
-// 	t_data	data;
-// 	int		i;
-// 	int		pipe_fd[2];
-// 	int		commands_count;
-// 	char	*path;
-// 	char	**cmd;
-// 	int		status;
-// 	int		wpid;
+int main(int argc, char **argv, char **envp)
+{
+    t_data data;
+    int current;
+    int status;
+    int exit_status;
 
-// 	i = 1;
-// 	if (argc != 5)
-// 		return (-1);
-// 	commands_count = argc - 3;
-// 	data.stdin = dup(0);
-// 	data.stdout = dup(1);
-// 	while (i <= commands_count)
-// 	{
-// 		pipe(pipe_fd);
-// 		data.pid = fork();
-// 		if (data.pid < 0)
-// 			write(2, "Erro\n", 5);
-// 		else if (data.pid == 0)
-// 		{
-// 			if (i == 1)
-// 				data.fd = open(argv[1], O_RDONLY);
-// 			else if (i == commands_count)
-// 				data.fd = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC,
-// 						0644);
-// 			if (data.fd < 0)
-// 				(perror("zsh"));
-// 			// write(2, "Nao deu para abrir o arquivo\n", 29);
-// 			if (i == 1)
-// 				(dup2(data.fd, 0), dup2(pipe_fd[1], 1));
-// 			else if (i == commands_count)
-// 				(dup2(pipe_fd[0], 0), dup2(data.fd, 1));
-// 			close(data.fd);
-// 			path = get_path(argc, argv, envp);
-// 			cmd = get_cmds(argv, argc);
-// 			execve(path, cmd, envp);
-// 			write(2, "execve falhou\n", 14);
-// 			exit(-1);
-// 		}
-// 		i++;
-// 	}
-// 	if (data.pid > 0)
-// 	{
-// 		while (1)
-// 		{
-// 			wpid = waitpid(data.pid, &status, 0);
-// 			if (wpid <= 0)
-// 				break ;
-// 		}
-// 				// loop para quantidade de filhos
-// 	}
-// 	// get_path(argc, argv, envp);
-// 	return (0);
-// }
+    if (argc < 5)
+        return (EXIT_FAILURE);
+    current = 2;
+    // data = initialize(argc, argv, envp);
+    data.argc = argc;
+    data.argv = argv;
+    data.envp = envp;
+        data.in = open(data.argv[1], O_RDONLY);
+	if (data.in < 0)
+		(print_error(data.argv[1]), close_and_exit(data.pipe_fd1));
+    data.out = open(data.argv[data.argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (data.out < 0)
+		(print_error(data.argv[data.argc - 1]), close_and_exit(data.pipe_fd1));
+    
+    int i;
+
+    i = 2;
+    while (i <= data.argc - 2)
+    {
+        if (i % 2 == 0)
+        {
+            if (pipe(data.pipe_fd1) < 0)
+                return (perror("Error"), EXIT_FAILURE);
+        }
+        else
+            if (pipe(data.pipe_fd2) < 0)
+                return (perror("Error"), EXIT_FAILURE);
+        i++;
+    }
+    while (current < argc - 1)
+    {
+        if ((data.child = fork()) < 0)
+            return (perror("Error"), EXIT_FAILURE);
+        else if (data.child == 0)
+            child(data, current);
+        current++;
+    }
+    if (data.child > 0)
+    {
+        (close(data.pipe_fd1[0]), close(data.pipe_fd1[1]));
+	    (close(data.pipe_fd2[0]), close(data.pipe_fd2[1]));
+	    waitpid(data.child, &status, 0);
+	    exit_status = WEXITSTATUS(status); 
+    }
+    return (exit_status);
+}

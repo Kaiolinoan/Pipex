@@ -9,18 +9,14 @@ all: $(NAME)
 $(NAME): $(OBJS)
 
 	@ar rcs $(NAME) $(OBJS)
-	@echo 'Biblioteca criada'
-	@echo 'Codigo compilado!'
 
 %.o:%.c
 	@$(CC) $(CFLAGS) -I. -c $< -o $@
  
 clean:
 	@find . -name '*.o' -delete
-	@echo 'Objetos limpos!'
 
 fclean: clean
 	@rm -f $(NAME)
-	@echo  'Biblioteca limpa!'
 
 re: fclean all

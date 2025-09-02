@@ -10,18 +10,24 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#ifndef PIPEX_BONUS_H
+# define PIPEX_BONUS_H
 
-# include "Libft/libft.h"
+# include "../Libft/libft.h"
 # include <errno.h>
 # include <sys/wait.h>
+#include <stdbool.h>
 
 typedef struct s_data
 {
-	int		fd;
-	int		child1;
-	int		child2;
+    int     in;
+    int     out;
+    int     pipe_fd1[2];
+    int     pipe_fd2[2];
+	int		child;
+	int		argc;
+    char    **argv;
+    char    **envp;
 }	t_data;
 
 typedef struct s_split
@@ -30,12 +36,12 @@ typedef struct s_split
 	size_t	mat_index;
 }	t_split;
 
-void	child1(t_data data, char **argv, char **envp, int pipe_fd[2]);
-void	child2(t_data data, char **argv, char **envp, int pipe_fd[2]);
+t_data    initialize(int argc, char **argv, char **envp);
 char	*get_path(char **argv, char **envp, int av_index);
 char	*ft_free_and_join(char *s1, char *s2);
 char	**get_cmds(char **argv, int av_index);
 void	clean_mem(char *path, char **cmd);
+void	child(t_data data, int current);
 void	close_and_exit(int pipe_fd[2]);
 void	print_error(char *file);
 

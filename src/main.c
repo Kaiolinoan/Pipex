@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: klino-an <klino-an@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/29 15:21:11 by klino-an          #+#    #+#             */
-/*   Updated: 2025/08/29 15:21:11 by klino-an         ###   ########.fr       */
+/*   Created: 2025/08/26 15:25:05 by klino-an          #+#    #+#             */
+/*   Updated: 2025/08/26 15:25:05 by klino-an         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,10 @@ int	main(int argc, char **argv, char **envp)
 	int		pipe_fd[2];
 	int		status1;
 	int		status2;
+	int		exit_status;
 
 	if (argc != 5)
-		return (EXIT_FAILURE);
+		return (-1);
 	if (pipe(pipe_fd) < 0)
 		return (perror("Error"), -1);
 	data.child1 = fork();
@@ -33,9 +34,9 @@ int	main(int argc, char **argv, char **envp)
 		return (perror("Error"), -1);
 	else if (data.child2 == 0)
 		child2(data, argv, envp, pipe_fd);
-	close(pipe_fd[0]);
-	close(pipe_fd[1]);
+	(close(pipe_fd[0]), close(pipe_fd[1]));
 	waitpid(data.child1, &status1, 0);
 	waitpid(data.child2, &status2, 0);
-	return (0);
+	exit_status = WEXITSTATUS(status2); 
+	return (exit_status);
 }

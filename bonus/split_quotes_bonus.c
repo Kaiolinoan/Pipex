@@ -10,7 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../pipex.h"
+#include "pipex_bonus.h"
+
 
 static size_t	get_word_len(char const *s, char c, size_t *i)
 {
