@@ -19,6 +19,8 @@ void manage_fds(t_data data, int input, int output)
 	close(data.pipe_fd1[1]);
 	close(data.pipe_fd2[0]);
 	close(data.pipe_fd2[1]);
+	close(data.in);
+	close(data.out);
 }
 
 static void exec_commands(t_data data, int current)
@@ -40,10 +42,10 @@ static void exec_commands(t_data data, int current)
 	exit(EXIT_FAILURE);
 }
 
-void	child(t_data data, int current)
+void	children(t_data data, int current)
 {
 	if (current == 2)
-		manage_fds(data, data.in, data.pipe_fd1[1]);
+		(manage_fds(data, data.in, data.pipe_fd1[1]), close(data.in));
 	else if (current == data.argc - 2)
 	{
 		if (current % 2 == 0)
@@ -51,6 +53,7 @@ void	child(t_data data, int current)
 
 		else 
 			manage_fds(data, data.pipe_fd1[0], data.out);
+		close(data.out);
 	}
 	else
 	{

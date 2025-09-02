@@ -41,7 +41,7 @@ char	*get_path(char **argv, char **envp, int av_index);
 char	*ft_free_and_join(char *s1, char *s2);
 char	**get_cmds(char **argv, int av_index);
 void	clean_mem(char *path, char **cmd);
-void	child(t_data data, int current);
+void	children(t_data data, int current);
 void	close_and_exit(int pipe_fd[2]);
 void	print_error(char *file);
 
