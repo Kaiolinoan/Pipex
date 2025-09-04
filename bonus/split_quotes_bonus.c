@@ -12,7 +12,6 @@
 
 #include "pipex_bonus.h"
 
-
 static size_t	get_word_len(char const *s, char c, size_t *i)
 {
 	size_t	arr_i;

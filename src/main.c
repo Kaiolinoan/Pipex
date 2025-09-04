@@ -18,7 +18,6 @@ int	main(int argc, char **argv, char **envp)
 	int		pipe_fd[2];
 	int		status1;
 	int		status2;
-	int		exit_status;
 
 	if (argc != 5)
 		return (-1);
@@ -37,6 +36,5 @@ int	main(int argc, char **argv, char **envp)
 	(close(pipe_fd[0]), close(pipe_fd[1]));
 	waitpid(data.child1, &status1, 0);
 	waitpid(data.child2, &status2, 0);
-	exit_status = WEXITSTATUS(status2); 
-	return (exit_status);
+	return (WEXITSTATUS(status2));
 }

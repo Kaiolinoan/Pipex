@@ -12,44 +12,31 @@
 
 #include "pipex_bonus.h"
 
-static int    load_pipes(t_data data)
+void iniatialize_vars(t_data *data, int argc, char **argv, char**envp)
 {
-    int i;
+    data->argc = argc;
+    data->argv = argv;
+    data->envp = envp;
+    data->in = -1;
+    data->out = -1;
+    data->pipe_fd1[0] = -1;
+    data->pipe_fd1[1] = -1;
+    data->pipe_fd2[0] = -1;
+    data->pipe_fd2[1] = -1;
+}   
 
-   i = 2;
-    while (i <= data.argc - 2)
+bool create_pipes(t_data *data, int current)
+{
+    if (current != data->argc - 2)
     {
-        if (i % 2 == 0)
+        if (current % 2 == 0)
         {
-            if (pipe(data.pipe_fd1) < 0)
-                return (perror("Error"), EXIT_FAILURE);
+            if (pipe(data->pipe_fd1) < 0)
+                return (false);
         }
         else
-            if (pipe(data.pipe_fd2) < 0)
-                return (perror("Error"), EXIT_FAILURE);
-        i++;
+            if (pipe(data->pipe_fd2) < 0)
+                return (false);
     }
-    return (0);
-}
-
-static void open_files(t_data data)
-{
-    data.in = open(data.argv[1], O_RDONLY);
-	if (data.in < 0)
-		(print_error(data.argv[1]), close_and_exit(data.pipe_fd1));
-    data.out = open(data.argv[data.argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (data.out < 0)
-		(print_error(data.argv[data.argc - 1]), close_and_exit(data.pipe_fd1));
-}
-
-t_data    initialize(int argc, char **argv, char **envp)
-{
-    t_data data;
-    
-    data.argc = argc;
-    data.argv = argv;
-    data.envp = envp;
-    load_pipes(data);
-    open_files(data);
-    return (data);
+    return (true);
 }

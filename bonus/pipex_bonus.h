@@ -36,14 +36,18 @@ typedef struct s_split
 	size_t	mat_index;
 }	t_split;
 
-t_data    initialize(int argc, char **argv, char **envp);
+void    iniatialize_vars(t_data *data, int argc, char **argv, char**envp);
+bool    create_pipes(t_data *data, int current);
 char	*get_path(char **argv, char **envp, int av_index);
 char	*ft_free_and_join(char *s1, char *s2);
 char	**get_cmds(char **argv, int av_index);
 void	clean_mem(char *path, char **cmd);
-void	children(t_data data, int current);
+void	children(t_data *data, int current);
 void	close_and_exit(int pipe_fd[2]);
 void	print_error(char *file);
+void    close_all(t_data *data);
+void    ft_close(int *fd);
+void    close_main(t_data *data);
 
 // split related
 void	free_split(char **str, size_t count);

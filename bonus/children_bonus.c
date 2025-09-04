@@ -11,56 +11,59 @@
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
-void manage_fds(t_data data, int input, int output)
+
+static void manage_fds(t_data *data, int input, int output)
 {
 	dup2(input, 0);
 	dup2(output, 1);
-	close(data.pipe_fd1[0]);
-	close(data.pipe_fd1[1]);
-	close(data.pipe_fd2[0]);
-	close(data.pipe_fd2[1]);
-	close(data.in);
-	close(data.out);
+	close_all(data);
 }
 
-static void exec_commands(t_data data, int current)
+static void exec_commands(t_data *data, int current)
 {
 	char	*path;
 	char	**cmd;
 
-	path = get_path(data.argv, data.envp, current);
-	cmd = get_cmds(data.argv, current);
+	path = get_path(data->argv, data->envp, current);
+	cmd = get_cmds(data->argv, current);
 	if (!path || !cmd || !(*cmd))
 	{
 		write(2, "zsh: command not found: ", 24);
-		(write(2, data.argv[current], ft_strlen(data.argv[current])), write(2, "\n", 1));
+		(write(2, data->argv[current], ft_strlen(data->argv[current])), write(2, "\n", 1));
 		(clean_mem(path, cmd), exit(EXIT_FAILURE));
 	}
-	execve(path, cmd, data.envp);
-	print_error(data.argv[current]);
+	execve(path, cmd, data->envp);
+	print_error(data->argv[current]);
 	clean_mem(path, cmd);
+	close_all(data);
 	exit(EXIT_FAILURE);
 }
 
-void	children(t_data data, int current)
+void	children(t_data *data, int current)
 {
 	if (current == 2)
-		(manage_fds(data, data.in, data.pipe_fd1[1]), close(data.in));
-	else if (current == data.argc - 2)
 	{
+		data->in = open(data->argv[1], O_RDONLY);
+		if (data->in < 0)
+			(print_error(data->argv[1]), close_and_exit(data->pipe_fd1));
+		(manage_fds(data, data->in, data->pipe_fd1[1]), ft_close(&data->in));
+	}
+	else if (current == data->argc - 2)
+	{
+		data->out = open(data->argv[data->argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if (data->out < 0)
+			(print_error(data->argv[data->argc - 1]), close_and_exit(data->pipe_fd1));
 		if (current % 2 == 0)
-			manage_fds(data, data.pipe_fd2[0], data.out);
-
+			(manage_fds(data, data->pipe_fd2[0], data->out), ft_close(&data->out));
 		else 
-			manage_fds(data, data.pipe_fd1[0], data.out);
-		close(data.out);
+			(manage_fds(data, data->pipe_fd1[0], data->out), ft_close(&data->out));
 	}
 	else
 	{
 		if (current % 2 == 0)
-			manage_fds(data, data.pipe_fd2[0], data.pipe_fd1[1]);
+			manage_fds(data, data->pipe_fd2[0], data->pipe_fd1[1]);
 		else
-			manage_fds(data, data.pipe_fd1[0], data.pipe_fd2[1]);
+			manage_fds(data, data->pipe_fd1[0], data->pipe_fd2[1]);
 	}
 	exec_commands(data, current);
 }

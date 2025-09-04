@@ -72,7 +72,7 @@ void	free_split(char **str, size_t count)
 
 void	close_and_exit(int pipe_fd[2])
 {
-	close(pipe_fd[0]);
-	close(pipe_fd[1]);
+	ft_close(&pipe_fd[0]);
+	ft_close(&pipe_fd[1]);
 	exit(EXIT_FAILURE);
 }

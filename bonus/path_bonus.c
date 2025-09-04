@@ -12,7 +12,6 @@
 
 #include "pipex_bonus.h"
 
-
 char	**get_cmds(char **argv, int av_index)
 {
 	char	**command;
