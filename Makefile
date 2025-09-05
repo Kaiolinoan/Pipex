@@ -6,7 +6,7 @@ SRC_FOLDER = src
 BONUS_FOLDER = bonus
 OBJ_FOLDER = obj
 SRCS_FILES = $(addprefix $(SRC_FOLDER)/, $(addsuffix .c, main utils children path split_quotes))
-BONUS_FILES = $(addprefix $(BONUS_FOLDER)/, $(addsuffix .c, main_bonus utils_bonus children_bonus path_bonus split_quotes_bonus start_bonus close_bonus))
+BONUS_FILES = $(addprefix $(BONUS_FOLDER)/, $(addsuffix .c, main_bonus utils_bonus children_bonus path_bonus split_quotes_bonus start_bonus close_bonus here_doc_bonus))
 OBJS = $(patsubst $(SRC_FOLDER)/%.c, $(OBJ_FOLDER)/%.o, $(SRCS_FILES))
 BONUS_OBJS = $(patsubst $(BONUS_FOLDER)/%.c, $(OBJ_FOLDER)/%.o, $(BONUS_FILES))
 

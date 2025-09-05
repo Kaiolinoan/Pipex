@@ -28,6 +28,7 @@ typedef struct s_data
 	int		argc;
     char    **argv;
     char    **envp;
+    bool    here_doc;
 }	t_data;
 
 typedef struct s_split
@@ -42,12 +43,14 @@ char	*get_path(char **argv, char **envp, int av_index);
 char	*ft_free_and_join(char *s1, char *s2);
 char	**get_cmds(char **argv, int av_index);
 void	clean_mem(char *path, char **cmd);
-void	children(t_data *data, int current);
+void	children(t_data *data, int *current);
 void	close_and_exit(int pipe_fd[2]);
 void	print_error(char *file);
 void    close_all(t_data *data);
 void    ft_close(int *fd);
 void    close_main(t_data *data);
+void    here_doc(t_data *data);
+
 
 // split related
 void	free_split(char **str, size_t count);

@@ -39,33 +39,45 @@ static void exec_commands(t_data *data, int current)
 	exit(EXIT_FAILURE);
 }
 
-void	children(t_data *data, int current)
+void	children(t_data *data, int *current)
 {
-	if (current == 2)
+	if ((*current) == 2)
 	{
-		data->in = open(data->argv[1], O_RDONLY);
-		if (data->in < 0)
-			(print_error(data->argv[1]), close_and_exit(data->pipe_fd1));
-		(manage_fds(data, data->in, data->pipe_fd1[1]), ft_close(&data->in));
+		if (data->here_doc)
+		{
+			(*current)++;
+			dprintf(2, "%d\n", *current);
+			manage_fds(data, data->pipe_fd1[0], data->pipe_fd2[1]);
+			// ft_close(&data->pipe_fd1[0]);
+			// ft_close(&data->pipe_fd1[1]);
+		}
+		else
+		{
+			data->in = open(data->argv[1], O_RDONLY);
+			if (data->in < 0)
+				(print_error(data->argv[1]), close_and_exit(data->pipe_fd1));
+			(manage_fds(data, data->in, data->pipe_fd1[1]), ft_close(&data->in));
+		}
 	}
-	else if (current == data->argc - 2)
+	else if ((*current) == data->argc - 2)
 	{
-		data->out = open(data->argv[data->argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if (data->here_doc)
+			data->out = open(data->argv[data->argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
+		else
+			data->out = open(data->argv[data->argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (data->out < 0)
 			(print_error(data->argv[data->argc - 1]), close_and_exit(data->pipe_fd1));
-		if (current % 2 == 0)
+		if ((*current) % 2 == 0)
 			(manage_fds(data, data->pipe_fd2[0], data->out), ft_close(&data->out));
 		else 
 			(manage_fds(data, data->pipe_fd1[0], data->out), ft_close(&data->out));
 	}
 	else
-	{
-		if (current % 2 == 0)
+		if ((*current) % 2 == 0)
 			manage_fds(data, data->pipe_fd2[0], data->pipe_fd1[1]);
 		else
 			manage_fds(data, data->pipe_fd1[0], data->pipe_fd2[1]);
-	}
-	exec_commands(data, current);
+	exec_commands(data, (*current));
 }
 
 

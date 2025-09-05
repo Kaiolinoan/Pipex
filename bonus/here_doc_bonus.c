@@ -12,68 +12,25 @@
 
 #include "pipex_bonus.h"
 
-void iniatialize_vars(t_data *data, int argc, char **argv, char**envp)
+void    here_doc(t_data *data)
 {
-    data->argc = argc;
-    data->argv = argv;
-    data->envp = envp;
-    data->in = -1;
-    data->out = -1;
-    data->pipe_fd1[0] = -1;
-    data->pipe_fd1[1] = -1;
-    data->pipe_fd2[0] = -1;
-    data->pipe_fd2[1] = -1;
-}  
-
-size_t	ft_strlen(const char *str)
-{
-	size_t	i;
-
-	if (!str)
-		return (0);
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
-}
-int	ft_strncmp(const char *s1, const char *s2, size_t n)
-{
-	size_t	i;
-
-	if (!s1 || !s2)
-		return (-1);
-	i = 0;
-	while ((s1[i] != '\0' || s2[i] != '\0') && (i < n))
-	{
-		if (s1[i] == s2[i])
-			i++;
-		else
-			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-	}
-	return (0);
-}
-
-void    here_doc(t_data data)
-{
-    char *store;
     char *limiter;
-    char *str;
+    char *line;
 
-    store = NULL;
-    str = NULL;
-    limiter = data.argv[2];
+    line =  NULL;
+    limiter = data->argv[2];
+    if (pipe(data->pipe_fd1) < 0)
+        return ;
     while (1)
     {
-        str = get_next_line(0);
-        store = ft_strjoin(store, str);
-        if ((ft_strncmp(str, limiter, ft_strlen(limiter)) == 0 ) && (str[ft_strlen(limiter)] == '\n'))
+        line = get_next_line(0);
+        if ((ft_strncmp(line, limiter, ft_strlen(limiter)) == 0 ) && (line[ft_strlen(limiter)] == '\n'))
+        {
+            free(line);
             break ;
+        }
+        ft_putstr_fd(line, data->pipe_fd1[1]); 
+        free(line);
     }
-    
+    ft_close(&data->pipe_fd1[1]);
 }
- int main(int argc, char **argv, char **envp)
- {
-    t_data data;
-    iniatialize_vars(&data , argc, argv, envp);
-    here_doc(data);
- }

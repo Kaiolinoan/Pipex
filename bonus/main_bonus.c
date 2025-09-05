@@ -21,8 +21,11 @@ int main(int argc, char **argv, char **envp)
     if (argc < 5)
         return (EXIT_FAILURE);
     iniatialize_vars(&data, argc, argv, envp);
-    if (ft_strncmp(argv[1], "here_doc", 8) == 0);
-        here_doc(data);
+    if (!ft_strncmp(argv[1], "here_doc", 8))
+    {
+        here_doc(&data);
+        data.here_doc = true;
+    }
     current = 2;
     while (current <= argc - 2)
     {
@@ -31,7 +34,7 @@ int main(int argc, char **argv, char **envp)
         if ((data.child = fork()) < 0)
             close_main(&data);
         else if (data.child == 0)
-            children(&data, current);
+            children(&data, &current);
         else 
             if (current % 2 == 0)
                 ft_close(&data.pipe_fd1[1]), ft_close(&data.pipe_fd2[0]);

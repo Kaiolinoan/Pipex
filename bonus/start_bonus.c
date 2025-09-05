@@ -23,6 +23,7 @@ void iniatialize_vars(t_data *data, int argc, char **argv, char**envp)
     data->pipe_fd1[1] = -1;
     data->pipe_fd2[0] = -1;
     data->pipe_fd2[1] = -1;
+    data->here_doc = false;
 }   
 
 bool create_pipes(t_data *data, int current)
